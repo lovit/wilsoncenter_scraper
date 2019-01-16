@@ -1,3 +1,6 @@
+from bs4 import BeautifulSoup
+
+
 def parse_title(soup):
     try:
         soup.select('h1[class=hero__title]')[0].text.strip()
@@ -38,3 +41,39 @@ def parse_page(soup):
         'author': parse_author(soup),
         'content': parse_content(soup)
     }
+
+url_base = 'https://www.wilsoncenter.org/{}'
+
+def get_links_from_html(html_path):
+    """
+    Arguments
+    ---------
+    html_path : str
+        HTML file path (local or remote)
+
+    Returns
+    -------
+    urls : list of str
+        URLs of articles, blog-posts, and publications
+    """
+
+    with open(html_path, encoding='utf-8') as f:
+        html = f.read()
+    soup = BeautifulSoup(html, 'lxml')
+    links = soup.select('div[class^=wc-masonry-grid__item] a')
+    hrefs = [parse_href(link) for link in links]
+    hrefs = {href for href in hrefs if href is not None}
+    urls = [url_base.format(href) for href in hrefs]
+    return urls
+
+def parse_href(link):
+    if not hasattr(link, 'attrs'):
+        return None
+    href = link.attrs.get('href', '')
+    if href.find('/blog-post/') == 0:
+        return href
+    if href.find('/publication/') == 0:
+        return href
+    if href.find('/article/') == 0:
+        return href
+    return None

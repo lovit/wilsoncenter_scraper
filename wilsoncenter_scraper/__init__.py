@@ -1,4 +1,5 @@
 from .parser import parse_page
+from .parser import get_links_from_html
 from .utils import save
 from .utils import now
 from .utils import get_soup
