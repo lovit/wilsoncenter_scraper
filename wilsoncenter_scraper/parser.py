@@ -4,7 +4,7 @@ from .utils import get_soup
 
 def parse_title(soup):
     try:
-        soup.select('h1[class=hero__title]')[0].text.strip()
+        return soup.select('h1[class=hero__title]')[0].text.strip()
     except Exception as e:
         return ''
 
