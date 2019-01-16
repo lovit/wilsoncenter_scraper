@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from .utils import get_soup
 
 
 def parse_title(soup):
@@ -34,8 +35,10 @@ def parse_content(soup):
         return ''
     return '\n'.join(phrases)
 
-def parse_page(soup):
+def parse_page(url):
+    soup = get_soup(url)
     return {
+        'url': url,
         'title': parse_title(soup),
         'date': parse_date(soup),
         'author': parse_author(soup),
